@@ -22,4 +22,4 @@ What you build is entirely up to you! Want to send out e-mail alerts when a Face
 
 Veritone Automate Studio is built with the [Node-RED](https://nodered.org/) open source technology that is supported by the JS Foundation. At Veritone, we have taken this foundational open source technology and infused our own aiWARE palette of nodes that abstract away the underlying Veritone logic and data model, making it easier for users to take advantage of the underlying power of aiWARE.
 
-For more info on how Automate Studio fits into the aiAWARE architecture, see [our FAQ](developer/flow/faq).
+For more info on how Automate Studio fits into the aiWARE architecture, see [our FAQ](developer/flow/faq).
