@@ -4,6 +4,7 @@
 
 This document describes the end to end process of onboarding an engine, from the business aspects to the tech, and then ongoing updates and monitoring.
 
+<!-- INTERNAL
 ## Business Workflow
 
 For new engine onboarding, BU engine owners can either:
@@ -11,7 +12,6 @@ For new engine onboarding, BU engine owners can either:
 1. Open a new Account in Salesforce if the engine vendor is a new one. 
 2. Open a new Opportunity in Salesforce if adding an engine by and existing vendor. 
 
-<!-- INTERNAL
 The [Engines Qlik Dashboard](https://qlik.veritone.com/veritone/sense/app/48937db1-6a76-45c4-9b89-0a22e1b7c1cd/sheet/3225d592-13fd-40d4-89ed-2edd0e2c65ef/state/0) is the internal single source of truth and is syncing hourly with both production tables and Salesforce. 
 -->
 <!-- INTERNAL
@@ -32,13 +32,13 @@ TODO (Kfir / Sean / Trevor):
 
 ## Engine Deployment Workflow
 
-Documentataion: [Link](https://docs.veritone.com/#/developer/engines/tutorial/?id=_39hello-world39-engine-high-level-overview).
+See documentataion [here](https://docs.veritone.com/#/developer/engines/tutorial/?id=_39hello-world39-engine-high-level-overview).
 
 <!-- INTERNAL
 Internal spec: [Engine Approval Process](https://docs.google.com/document/d/1Ty3bUw3_20aoonFCKLyMn1MpCGRhkK5cVaykVq9li7s/edit?usp=sharing)
--->
 
 ![](https://lh5.googleusercontent.com/otbaYNnEXPzdKUm-t4_AQEeg3kZilFR61eEeyKaJkG2dc1kq5YQSi_lAhMTzc5To3bUcRJYGyZCza7JgWSK6gd24V1dvaLo-l9SFPriEq_rxtn8oTNUb-SGdcHSaOgMPP6gDc_ux)
+-->
 
 ## Engine Certification Workflow
 
@@ -52,19 +52,19 @@ Internal spec: [Engine Certification Reqs](https://docs.google.com/document/d/1f
 
 1. Engine Docker container is registered in Developer 
 2. Validate engine manifest is properly formatted 
-3. Validate the manifest contains appropriate values based on selected cognitive capability.1 
-4. Clair security check2 
-5. Engine isolation check if the engine is network isolated (check how many external calls it makes)3 
-6. Run the engine against a job appropriate for its capability and train the engine if necessary.4 
+3. Validate the manifest contains appropriate values based on selected cognitive capability.
+4. Clair security check
+5. Engine isolation check if the engine is network isolated (check how many external calls it makes)
+6. Run the engine against a job appropriate for its capability and train the engine if necessary.
 7. Confirm the output from the engine conforms to VTN standards. 
-8. Collect engine stats such as CPU usage, GPU usage, processing time, memory usage.5 
-9. Benchmark the engine against ground truth and other engines on the platform for metrics such as accuracy, processing time, and cost.6 
+8. Collect engine stats such as CPU usage, GPU usage, processing time, memory usage.
+9. Benchmark the engine against ground truth and other engines on the platform for metrics such as accuracy, processing time, and cost.
 10. Add the engine to the daily heartbeat tests and add the recipient’s email.  
 11. Send Notifications 
-    1. On Failure 
+    - On Failure 
         1. If any step in the process fails then send a notification to the user who onboarded the engine with failure details. 
 
-    2. On Success 
+    - On Success 
         1. Recipients 
             1. If the organization settings are set to Auto-Approve send a notification only to the user who onboarded the engine 
             2. If the organization settings are NOT set to Auto-Approve send the notification to: 
@@ -90,6 +90,7 @@ Internal spec: [Engine Certification Reqs](https://docs.google.com/document/d/1f
 6 This is only supported for Transcription and will initially be an optional step
 -->
 
+<!-- INTERNAL
 ## Development Roadmap
 
 - Deploy what is currently built to prod in a non-blocking way [JIRA Ticket](https://steel-ventures.atlassian.net/browse/CXDX-181) 
@@ -120,6 +121,10 @@ Internal spec: [Engine Certification Reqs](https://docs.google.com/document/d/1f
 
 - Implement custom fields to certification process [JIRA Ticket](https://steel-ventures.atlassian.net/browse/CXDX-173) 
 - Implement support for training to certification process [JIRA Ticket](https://steel-ventures.atlassian.net/browse/CXDX-174) 
+
+-->
+
+
 
 ## Resources
 

@@ -4,7 +4,7 @@
 
 ### Overview
 
-Controller is the central service that registers hosts &amp; engine instances, manages all work, and communicates to the DB layer. Controllers are stateless API services, typically deployed behind a load balancer, to achieve API and business logic scalability. Within the cluster, a single Controller is promoted to be a Primary Controller and serves as the Edge supervisor, responsible for specific critical functions.
+Controller is the central service that registers hosts and engine instances; manages all work; and communicates to the database layer. Controllers are stateless API services, typically deployed behind a load balancer, to achieve API and business logic scalability. Within the cluster, a single Controller is promoted to be a Primary Controller and serves as the Edge supervisor, responsible for specific critical functions.
 
 ### Primary Controller
 
@@ -16,7 +16,7 @@ Controller is the central service that registers hosts &amp; engine instances, m
 - Checks all resources and availability
 - Dumps DB backups to file system periodically
 - Error notifications
-- Also removes stopped hosts from EC2/Azure after a period
+- Also removes stopped hosts after a period
 
 ### Controller
 
@@ -101,14 +101,14 @@ Step 8:  When the last work is done, the engine notifies Controller that all wor
 
 Controller HTTP API is implemented using the _fasthttp_ Go library.    We are using a RESTful style for these HTTP-based APIs.
 
-The APIs are defined at [https://github.com/veritone/project-edge/tree/master/api/controller](https://github.com/veritone/project-edge/tree/master/api/controller) in swagger definition.
+The APIs are defined at [https://github.com/veritone/project-edge/tree/master/api/controller](https://github.com/veritone/project-edge/tree/master/api/controller) in Swagger definition.
 
 General notes:
 
-- GET must be idempotent.  E.g., it cannot change resources
-- POST can either create, update resources or take action
-- PUT same as POST for this
-- DELETE will take action and typically be STOP or DELETE
+- GET must be idempotent.  E.g., it cannot change resources.
+- POST can either create, update resources or take action.
+- PUT same as POST for this.
+- DELETE will take action and typically be STOP or DELETE.
 - PATH will not be used currently.  If used, it will be used for updates to a resource.
 
 ### Request Bodies
@@ -140,7 +140,7 @@ Please see [https://en.wikipedia.org/wiki/List\_of\_HTTP\_status\_codes](https:/
 | 429 Too Many Requests | The server has too many requests currently. The server will use the Header Retry-After with seconds to try again.  This will follow [https://tools.ietf.org/html/rfc6585](https://tools.ietf.org/html/rfc6585). |
 | 500 Internal Error | These will be tracked.  There should be no 500 errors. |
 
-Engine Instance APIs
+**Engine Instance APIs**
 
 | HTTP Method | API | Description |
 | --- | --- | --- |
@@ -151,7 +151,7 @@ Engine Instance APIs
 | GET | /engine\_instance/{EngineInstanceId}/detail | This provides information about the engine instance. |
 | GET | /engine\_instance/{EngineInstanceId}/workdetail | This provides information about the work assigned to the engine instance. |
 
-Host APIs
+**Host APIs**
 
 | HTTP Method | API | Description |
 | --- | --- | --- |
@@ -161,8 +161,6 @@ Host APIs
 | GET | /host/{HostId}/detail | This provides information about the host |
 | GET | /host/{HostId}/status | This provides information on the last status update for the host |
 | POST | /host/{HostId}/drain | This updates the host into draining status.  No engines running on that host will be given new work. |
-
-
 
 ### Controller DB Tables
 
@@ -178,8 +176,6 @@ This table contains Task Parent and Task Child.
 | ParallelProcessing | Boolean : can have multiple engines for running in parallel for this node |
 | RetryCount | Numeric: 0 - 100, number of retries |
 | ParentCompleteBeforeStarting | Boolean: T if engine requires all input files in the directory before starting engine |
-
-
 
 In this table, route Parent->Out #1->In #1->Task Child is a row.  That diagram has two more additional rows that can be inserted into the table
 
@@ -206,13 +202,13 @@ In this table, route Parent->Out #1->In #1->Task Child is a row.  That diagram h
 | Path | String, path from inside ~job folder to the input. |
 | Format | JSONB Object.   |
 
-
-
 #### DAG Execution Tables
 
-For an up to date definition of tables, please see the github repo: [https://github.com/veritone/project-edge/tree/master/sql](https://github.com/veritone/project-edge/tree/master/sql).
+<!--
+For an up to date definition of tables, please see the Github repo: [https://github.com/veritone/project-edge/tree/master/sql](https://github.com/veritone/project-edge/tree/master/sql).
 
 These are here to discuss the main points of the tables and how the execution functions.
+-->
 
 | task\_route | Field Name |
 | --- | --- |
@@ -225,7 +221,7 @@ These are here to discuss the main points of the tables and how the execution fu
 | RetryCount | Number of retries on the vertex |
 | FailureCount | The number of failures on this vertex |
 
-Every 5 seconds, every engine reports via a timestamp the following data
+Every 5 seconds, every engine reports via a timestamp the following data:
 
 | task\_status | Description |
 | --- | --- |
@@ -243,7 +239,7 @@ Every 5 seconds, every engine reports via a timestamp the following data
 | CPU, float | CPU % of container |
 | Memory , float | Memory % of container |
 
-During processing, the engine toolkit on a seperate thread within the process should sample CPU and Memory via a command such as PS (&quot;ps -p [ARRAY of PID] -f -v&quot;) every second, and then publish average values over the 5 second interval.   Note which ones is the engine toolkit.  Docker Container stats.   Add Swap to server.
+During processing, the Engine Toolkit, on a seperate thread within the process, should sample CPU and Memory via a command such as PS (&quot;ps -p [ARRAY of PID] -f -v&quot;) every second, and then publish average values over the 5 second interval.   Note which ones is the engine toolkit.  Docker Container stats.   Add Swap to server.
 
 #### DB Data Overview
 
@@ -272,8 +268,6 @@ Each edge has either a fixed or scalable number of servers that it can launch an
 | host | A list of servers launched for this edge with associated meta-date. |
 | host\_status | This is the status updates from each host |
 
-
-
 **Processes**
 
 Each edge is configured to run a subset of processes:  engines, adapters, controllers.  This data is stored in the following tables:
@@ -293,8 +287,6 @@ Jobs and their corresponding tasks assigned to an Edge by one or multiple aiWARE
 | task | This is a list of tasks (scheduled and adhoc) that are either running, waiting to run and recently finished. This also includes scheduled tasks referenced by scheduled jobs. |
 | scheduled\_job | This contains the job templates (graph definition) for jobs that are scheduled to run on some frequency |
 |   |   |
-
-
 
 **Task Processing, Engine Allocation and Performance**
 
@@ -320,79 +312,83 @@ The controller reads and writes from DB to maintain state of the jobs, tasks and
 
 The Controller is a cluster of stateless servers that has connections to the DB, to a number of filesystems which store engine/task output data, and to engines and adapters via an HTTP server.
 
-Aligning Task Load with Engine Resources
+#### Aligning Task Load with Engine Resources
 
-Adding Engine Capacity
+**Adding Engine Capacity**
 
 Step 1:  Every 60 seconds, Engine Agent checks in with Controller by calling the controller API.
 
+<!--
 Payload format:
 
 Example:
-
+-->
 
 
 Step 2:  Controller writes data to DB.
 
-DB Tables and fields updated:
+<!-- DB Tables and fields updated: -->
 
+Step 3:  In response to these check ins, Controller can instruct Engine Agent to launch new engines based on a DB query to the Forecast Table that returns the engine deficiency count to meet current or forecasted SLAs.   The Forecast Table takes into consideration not only SLA but the priority of the SLA Tasks.   Controller sends to EA a request ID, that is subsequently  passed to the new Engine upon startup from EA.
 
-
-Step 3:  In response to these check ins, Controller can instruct Engine Agent to launch new engines based on a DB query to the Forecast Table that returns the engine deficiency count to meet current or forecasted SLAs.   The Forecast Table takes into consideration not only SLA but the priority of the SLA Tasks.   Controller should send to EA a request ID, that is subsequently  passed to the new Engine upon startup from EA.
-
+<!--
 Payload format:
 
 Example:
+-->
 
 
+Step 4:  Engine Agent launches engine and subsequently registers with Controller.  When registering the request ID passed to it at startup is passed back to Controller, so that controller can verify and track the time it takes to request and engine and the lag time to registering.  This is critical information, from a cost management as well as a performance management/forecasting standpoint.
 
-Step 4:  Engine Agent launches engine and subsequently registers with controller.  When registering the request ID passed to it at startup is passed back to Controller, so that controller can verify and track the time it takes to request and engine and the lag time to registering.  This is critical information, both from a cost management but also performance management / forecasting.
-
-Removing Engine Capacity
+**Removing Engine Capacity**
 
 Step 1:  Engines request work from controller with a GetWork request to the API:
 
+<!--
 Payload format:
 
 Example:
+-->
 
 Step 2:  A server that has been marked for shutdown in the DB is returned with the get work DB sql request the controller makes.   Forecaster is responsible for marking a server for shutdown.   API:
 
+<!--
 Payload format:
 
 Example:
-
+-->
 
 
 Step 3:  Controller will shut down this engine by sending a shutdown message to the engine in response to the API call in step 1.
 
+<!--
 Payload format:
 
 Example:
+-->
 
 
 
 
-
-### Adding and Removing Engine Logic
+### Adding or Removing Engine Logic
 
 Increasinhg or decreasing engine capacity is not a simple task.   Let&#39;s look at a few situations where modifying engine allocation can occur.
 
-Case 1 : High priority task is going to miss its SLA without more engine capacity.
+_Case 1 : High priority task is going to miss its SLA without more engine capacity._
 
 Root causes:  poor forecasting, bursting ad-hoc requests.
 
 Solution:  If possible, assign more engines to the task, assuming lower priority tasks exist and engine ping to Controller happens within a short enough duration to catch up.
 
-Case 2:  Task forecast predicts that the workload for a given engine type is below or above current capacity.
+_Case 2:  Task forecast predicts that the workload for a given engine type is below or above current capacity._
 
 The forecasting process uses data provided by Controller to predict engine supply requirements given scheduled and historical ad-hoc demand. In the case where there are clear over and under capacity engines based on the forecast, then the controller&#39;s task is straight forward:  kill the over capacity engines and launch the under capacity based on the SLA rankings in the DB.
 
-Case 3: Task forecast predicts the need for more engines than the hardware servers will support to meet SLAs.
+_Case 3: Task forecast predicts the need for more engines than the hardware servers will support to meet SLAs._
 
 Controller is not responsible for solving this problem.
 
-Case 4: Task forecast predicts that we have excess engine capacity across the board.
+_Case 4: Task forecast predicts that we have excess engine capacity across the board._
 
 In this case, based on the forecasted lowest engine demand, controller will mark a server for termination.  First it marks the server for termination in the DB.
-Controller kills the engine.   When Engine Agent checks in and provides a status report, showing what is running on the box, when this data confirms what the controller and DB should know at some point, that all engines are dead &mdash; then controller will send a message to Engine Agent, to kill the server.  Controller will then mark the server as being killed.
+Controller kills the engine. When Engine Agent checks in and provides a status report, showing what is running on the box, when this data confirms what the controller and DB should know at some point, that all engines are dead &mdash; then controller will send a message to Engine Agent, to kill the server.  Controller will then mark the server as being killed.

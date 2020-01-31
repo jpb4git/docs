@@ -15,6 +15,7 @@
     - [Job Processing](overview/aiWARE-in-depth/job-processing)
     - [File System](overview/aiWARE-in-depth/file-system)
     - [Running aiWARE Locally](overview/aiWARE-in-depth/how-to-run-locally)
+    - [Stream Ingestor 2](overview/aiWARE-in-depth/stream-ingestor)
 
   - [Glossary](overview/glossary/)
 

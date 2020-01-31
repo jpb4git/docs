@@ -2,6 +2,7 @@
 
 # Creating Jobs in V3F
 
+<!--
 This page talks about creating jobs for aiWARE using the existing GraphQL `createJob` mutation.
 However, this is not the final solution -- ideally we want to have a `createJobV3` to explicitly instruct V3 framework the routes and IOs -- 
 In addition, a number of Job DAGs are not totally supported yet -- will be noted in the section. 
@@ -11,6 +12,8 @@ See also:
  [A3-133: Supporting pure batch engine tasks without any ingestion](https://steel-ventures.atlassian.net/browse/A3-133) 
 
  [A3-131: Support Job DAGs where Adapters output directly to Cognitive Engines](https://steel-ventures.atlassian.net/browse/A3-131)
+-->
+
 
 ### Engines
 
@@ -33,8 +36,7 @@ See also:
 
 Set Query variable `clusterId` in the Query Variables
 and use that with these GraphQl mutations/queries.
-For PROD, see [this](https://github.com/veritone/realtime/wiki/CLUSTER-IDS) for clusters:
- 
+
 ```
 {
   "jobId": "19124905_meVau2vXDi",
@@ -44,8 +46,7 @@ For PROD, see [this](https://github.com/veritone/realtime/wiki/CLUSTER-IDS) for 
 
 ### createJobForEdge
 
-
-This is for using the WSA2, with audio chunks to SM
+This is for using the WSA2, with audio chunks to SM.
 
 **JobDAG**
 
@@ -99,7 +100,6 @@ mutation createJobForEdge{
     id
   }
 }
-
 ```
 
 #### Create Job for stream engine
@@ -107,7 +107,7 @@ mutation createJobForEdge{
 Supported in V3 edge
 
 ```
-WSA ----> SI Playback (to store HLS segments for playback and primary media to the TDO )
+WSA ----> SI Playback (to store HLS segments for playback and primary media to the TDO)
     |---> SI FFMPEG to stream ---> Cognitive stream engines
 ```
 
@@ -165,9 +165,11 @@ mutation createGSTTJobForEdge{
 
 ```
 
+<!--
 ### Reprocessing TDO with different engines
 
 See [A3-131](https://steel-ventures.atlassian.net/browse/A3-131)
+-->
 
 #### Stream Engines
 
@@ -199,7 +201,9 @@ mutation reprocessTDOWithStreamEngine{
 ```
 #### Chunk Engines
 
+<!--
 Not yet see [A3-131](https://steel-ventures.atlassian.net/browse/A3-131)
+-->
 
 ```
 SI FFMPEG  ---> Cognitive engines (chunk engines)
@@ -234,7 +238,9 @@ mutation reprocessTDOWithChunkEngine{
 
 ### Create job for processing non-media files
 
+<!--
 See [A3-131](https://steel-ventures.atlassian.net/browse/A3-131)
+-->
 
 ```
 WSA ----> SI Asset creator (to store the asset to the TDO)
@@ -276,7 +282,9 @@ mutation createTextJobForEdge{
 
 ### Reprocessing  job for processing non-media files
 
+<!--
 See [A3-131](https://steel-ventures.atlassian.net/browse/A3-131)
+-->
 
 ```
 WSA ----> SI Asset creator (to store the asset to the TDO)

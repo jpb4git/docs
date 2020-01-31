@@ -51,7 +51,7 @@ In addition to many of the requirements and features of older versions of Edge, 
 * No hard-coded references to managed services (AWS, Azure, and so on)
 
 ## Edge Subsystems
-Links (TBD) provide a deeper dive into each subsystem and its implementation.
+Links provide a deeper dive into each subsystem and its implementation.
 * Edge Agent
 * [File System](overview/aiWARE-in-depth/file-system.md)
 * [Controller](overview/aiWARE-in-depth/controller.md)
@@ -67,7 +67,7 @@ External interfaces available in Edge 3.0 are as follows.
 * API, CLI, & SDK
 * Admin UI
 * [Engine Development](overview/aiWARE-in-depth/engine-development.md)
-* [Standup Local Environment](overview/aiWARE-in-depth/how-to-run-locally.md)
+* [Stand Up Local Environment](overview/aiWARE-in-depth/how-to-run-locally.md)
 
 ## Workflows
 Describes in detail how Edge works at a functional level.
@@ -89,5 +89,5 @@ Base engines are engines owned by Veritone.
 * Adapters
 
 ## Miscellaneous
-* [How to Run V3F Locally](how-to-run-locally.md)
+* [How to Run V3F Locally](overview/aiWARE-in-depth/how-to-run-locally.md)
 
