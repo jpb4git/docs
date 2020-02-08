@@ -35,7 +35,7 @@
             <ul>
               <li>You can now search across all the Cognitive and Ingestion engines your Veritone organization has access to</li>
               <li>The brand new and enhanced engines table now lets you filter and sort your engine results</li>
-              <li>All of your engines, both ingestion (fka Adapters) and cognitive types are displayed in one centralized table for you to view, filter, and query
+              <li>All of your engines, both ingestion (aka Adapters) and cognitive types are displayed in one centralized table for you to view, filter, and query
               </li>
             </ul>
           </div>
