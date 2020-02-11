@@ -13,20 +13,17 @@ Chunk | Stream | Batch
 Processes a chunk at a time, producing vtn-standard outputs which are then aggregated by Output Writer to produce engine results for the task.<br/><br/>The chunks are normally the outputs of a parent task (e.g. Stream Ingestor splitting a stream into chunks of wav files), and can be processed in any order and by multiple engine instances to produce a quicker result. | Receives stream input from either an external source or a parent task, may produce vtn-standard outputs as the stream is processed, or other stream data (e.g. Stream Ingestor).<br/><br/>The engine needs the data in a single context to avoid losing accuracy or incurring complexity. For example, tracking objects across frames would be easier in a single stream than collating them across multiple chunks. | May not consume any input data from a parent task of the job.  However, it typically uses the payload for the task to perform the business logic, and outputs often produced directly into the container TDO.<br/><br/>Batch engines are typically associated with V1F (Iron-based) engines.
 
 
-Engine Toolkit
-==============
+## Engine Toolkit
 
 Engine Toolkit (ET) abstracts the input/output layer between the Engine and Veritone platform, freeing engine developers of having to deal with the nuances of getting input data (e.g. from queues) and producing the engine outputs (e.g. back to queue).
 
-New Engine Toolkit
-------------------
+## New Engine Toolkit
 
 1.  Backward compatible -- For chunk engines and other current functionality as described in Veritone docs.
 
 2.  Unified protocol -- The new version of Engine Toolkit strives to provide support to all engine types - keeping the interface consistent so that the choice of implementing chunk, stream, or batch shouldn't be depending on how engines should get their data.
 
-V3F Framework
-------------
+## V3F Framework
 
 The figure below shows at a high level the V3 Framework (V3F), which is where Engine Toolkit makes requests to Controller for work. The requests are made on behalf of the engines that the Engine Toolkit represents, including native engines such as Webstream Adaptor, TV&Radio, Stream Ingestors and Output Writer.
 
@@ -48,15 +45,14 @@ There is a RunTimeTTL set by Controller as directive to Engine Toolkit to termin
 
 Note that besides the databases, the File System contains the state of jobs/tasks as work is being done: processed chunks, in-processing chunks, or error chunks.  The input/output relationship between tasks is specified in the Edge database and represented in the file system accordingly. For engines to emit input/output chunks or streams, the interaction with the File System should be done by Engine Toolkit to ensure correctness. To learn more about the File System, see [File System [Edge 3.0 Subsystems]](overview/aiWARE-in-depth/file-system).
 
-Native Engines in Engine Toolkit
---------------------------------
+## Native Engines in Engine Toolkit
 
-Engine Toolkit V3F also has included a number of native engines such as Webstream Adapter, TV & Radio Adapter, Stream Ingestors (various flavors), and Output Writer. This provides the flexibility to turn any engine instances into "super-workers", helping to push through the initial ingestion pipeline as well as to finalize the engine outputs.
+Engine Toolkit for V3F includes a number of native engines such as Webstream Adapter, TV & Radio Adapter, Stream Ingestors (various flavors), and Output Writer. This provides the flexibility to turn any engine instances into "super-workers," helping to push data through the initial ingestion pipeline as well as to finalize the engine outputs.
 
 To activate the adapters or stream ingestors, it is recommended that the Docker image containing the Engine Toolkit binary should have `ffmpeg` and `streamlink` included. <!-- INTERNAL Internal engines built by Veritone engineers should include these applications and add them to the system path if not installed properly (e.g. via apt-get or apk add). -->
 
 
-Engine IDs:
+**Engine IDs:**
 
 1.  Web stream adaptor (engineId:9e611ad7-2d3b-48f6-a51b-0a1ba40feab4)
 
@@ -72,8 +68,7 @@ Engine IDs:
 
 For more details, see the [Stream Ingestor v2](overview/aiWARE-in-depth/stream-ingestor) doc.
 
-Engine Interaction with Engine Toolkit in V3F
-=============================================
+## Engine Interaction with Engine Toolkit in V3F
 
 Chunk engines continue to provide the `/process` webhook endpoint as documented currently ([link](https://docs.veritone.com/#/developer/engines/toolkit/)). The input chunk is provided in the `cacheUri` parameter.  The chunk result can be on the same response back for the `/process`, OR can be asynchronous at a later time. In the latter case, chunk engines act like stream for one chunk.
 
@@ -83,13 +78,11 @@ Batch engines are similarly invoked and are required to provide heartbeats back 
 
 See the [Engine Toolkit](developer/engines/toolkit/?id=engine-developers-toolkit) documentation for more details about ET implementation and required webhooks.
 
-Converting V2F Engines to V3F
-=============================
+## Converting V2F Engines to V3F
 
 Chunk Engines that already use the Engine Toolkit and thus do not have any direct interaction with Kafka: It's an easy process. Just pick up the latest distribution of the Engine Toolkit.
 
 Stream Engines need to be updated to move away from consuming directly from Kafka. Think of a stream engine as a chunk engine processing just a single chunk. The payload would come from the `payload` field in the post request to the `/process` webhook (vs. PAYLOAD_JSON env variable in V2F). The heartbeats should be converted to post to the callback endpoint with the appropriate payload.
-
 
 
 From V2F | Converting to V3F
@@ -107,8 +100,7 @@ Upon start up, read PAYLOAD_JSON for job info | Need to provide 2 webhooks :  `
 Update Task Status to running or complete | Do not update task status back to core.  Instead submit heartbeat message to the heartbeatWebhook of Engine Toolkit.  See [Heartbeat Webhook (from EngineToolkit)](overview/aiWARE-in-depth/engines?id=heartbeat-webhook-from-enginetoolkit)
 
 
-Engine Toolkit Docker image
-===========================
+## Engine Toolkit Docker image
 
 Engine Toolkit is available as a Docker image.  To include the Engine Toolkit in your engine Docker, use [multi-stage build](https://docs.docker.com/develop/develop-images/multistage-build/), and copy the toolkit binary to a specific location in your image.  Here is a sample Dockerfile snippet:
 
@@ -120,14 +112,47 @@ FROM YOUROWN_DOCKER_IMAGE
 
 COPY --from=vt-engine-toolkit /opt/aiware/engine /opt/aiware/engine
 
-.........
-
 ENTRYPOINT ["/opt/aiware/engine", "YOUR_ENGINE_BINARY"]
 
 ```
 
-Node-RED (Automate) Engine Runner in Engine Toolkit
-===================================================
+NOTES:
+
+1. Refreshing the Engine Toolkit:  Make sure the docker image is refreshed by doing a `docker pull veritone/aiware-engine-toolkit` prior to your `docker build`. For a local aiWARE environment, it is best to pull before building.
+  
+Using Engine Toolkit in an Alpine-based image:  To use Engine Toolkit with an alpine image, make sure to include this in the Dockerfile:
+
+`RUN apk add --no-cache libc6-compat`
+
+## Controller / Engine Toolkit / Node Red engine relationship
+
+For Node-RED engines in V3F, the runtime logic is provided by a single Docker image (node-red-runner) -- which needs the `ENGINE_ID` + runtime definition associated with a build when the container is started.  The difference between Node-RED Engines and other engines is:
+
+1. A column exists in the `edge.build` table to hold the build runtime -- which is where the runtime definition is stored.  Controller will retrieve the runtime JSON of a build (via GraphQL) and store that in this column.
+
+2. When Controller asks an agent to start an engine, the runtime JSON needs to be given as well.
+ 
+3. Agent on the engine node will start the container with the given `dockerImage` (in this case it should be the `node-red-runner`) with the additional behavior:
+
+    a. Store the `buildRuntime` to a file (e.g. `/cache/engines/{engineId}/{buildId}/runtime.json`). This file will be mounted to the engine Docker container in the same location (e.g. `-v /cache/engines/{engineId}/{buildId}/runtime.json:/cache/engines/{engineId}/{buildId}/runtime.json`).
+    
+    b.  Set the following environment variables when starting the engine Docker container:
+    
+ ```pre
+    AIWARE_BUILD_RUNTIME t= to the file location as set in a)
+    
+    ENGINE_ID = the engine id (from the HostActionLaunch)
+    
+    BUILD_ID = the build id (from the HostActionLaunch)
+```
+
+   c. Agent will also set the `ENGINE_ID` and `BUILD_ID` for the engine.
+    
+4. Engine Toolkit will be agnostic about this `AIWARE_BUILD_RUNTIME` -- the Node-RED process, however, will look for this variable -- which points to a file from which it can load the build runtime definition.
+
+5. With this approach, the Engine Toolkit does not have to do anything special for Node-RED engines.  The same framework will work for all kinds of engines.
+
+## Node-RED (Automate) Engine Runner in Engine Toolkit
 
 The Node-RED (Automate) engine runner is a Docker image that has Engine Toolkit & Node-RED installed, and it acts as a proxy agent. The ENTRYPOINT for the Docker image should be `/app/engine node main.js`, where main.js is the Node-RED engine runner.
 
@@ -141,8 +166,7 @@ TODO: The getWork API to Controller would need to be enhanced to allow retrievin
 
 ![](https://docs.google.com/drawings/u/0/d/saX3hnhHnAdGPXUr-YnUDQw/image?w=624&h=486&rev=230&ac=1&parent=1VC06SkIlMi-3FoqrqU3N_WGIwV7j2EmphRRSOXzbAi0)
 
-Deep Dive: Engine Interaction with Engine Toolkit
-=================================================
+## Deep Dive: Engine Interaction with Engine Toolkit
 
 This section gives more details about the interaction between Engine Toolkit and aiWARE infrastructure.
 
@@ -291,10 +315,3 @@ POST <http://localhost:1234/result/task1234>
 
 `204 - No content`
 
-
-
-### Alpine-Based Images
-
-To use Engine Toolkit with an `alpine` image, make sure to include this line in the Dockerfile:
-
-`RUN apk add --no-cache libc6-compat`
