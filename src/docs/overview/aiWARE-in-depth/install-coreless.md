@@ -18,7 +18,7 @@ Specifically, you will need a machine with:
 
 ## Machine Configuration
 
-Before going any further, please ensure that the following required setup actions have been completed on each physical/virtual machine before proceeding with the aiWARE Edge installation.
+Before proceeding, please ensure that the following required setup actions have been completed on each physical/virtual machine before proceeding with the aiWARE Edge installation.
 
 | **#** | **Action** | **Commands** |
 | --- | --- | --- |
