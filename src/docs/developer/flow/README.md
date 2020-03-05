@@ -23,3 +23,14 @@ What you build is entirely up to you! Want to send out e-mail alerts when a Face
 Veritone Automate Studio is built with the [Node-RED](https://nodered.org/) open source technology that is supported by the JS Foundation. At Veritone, we have taken this foundational open source technology and infused our own aiWARE palette of nodes that abstract away the underlying Veritone logic and data model, making it easier for users to take advantage of the underlying power of aiWARE.
 
 For more info on how Automate Studio fits into the aiAWARE architecture, see [our FAQ](developer/flow/faq).
+
+### Debugging your flows
+Your debugging experience in Automate Studio can be thought of as two steps: 
+1. running the flow in the Automate Studio runtime, and 
+2. debugging the output of the logic you configured in previous nodes 
+
+You can use several types of input nodes to run your node, and keep in mind that this run is intended to simulate how the flow will behave running as a flow engine on aiWARE’s processing framework. Drag an inject node onto the canvas, wire it to the node containing your logic that you wish to process next, click deploy to save your changes and operationalize the flow in Automate Studio, and then click the “inject button” on the left side of the node. 
+
+To view your logic outputs, drag the debug node from the palette menu on the left and connect an output wire from one or more nodes that you wish to evaluate. The outputs sent to the debug node are then logged on the right hand menu in the “debug” tab with the “bug” icon.
+
+
