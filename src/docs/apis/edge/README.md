@@ -10,9 +10,9 @@ Contact Info: [api@aiware.com](api@aiware.com)
 
 Version: 1.0.3
 
-Apache 2.0
+<!-- Apache 2.0
 
-http://www.apache.org/licenses/LICENSE-2.0.html
+http://www.apache.org/licenses/LICENSE-2.0.html -->
 
 ## Access
 
