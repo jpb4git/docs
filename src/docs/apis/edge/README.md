@@ -24,7 +24,7 @@ http://www.apache.org/licenses/LICENSE-2.0.html -->
 
 #### [Admin](#Admin)
 
-
+These are the Admin methods.
 
 *   [`post /admin/server_type/{ServerTypeID}/add`](#addserversServerType)
 *   [`post /admin/terminate`](#adminTerminateCluster)
