@@ -25,6 +25,7 @@ Veritone Automate Studio is built with the [Node-RED](https://nodered.org/) open
 For more info on how Automate Studio fits into the aiAWARE architecture, see [our FAQ](developer/flow/faq).
 
 ### Designing your flow engines
+
 For your flow to successfully run on the aiWARE engine processing framework, each flow needs to be designed so that it can accept incoming webhooks from the engine framework and communicate back.
 
 This design is reflected by the “Readyz” and “Process” http in and http response nodes.
@@ -33,8 +34,8 @@ While these nodes might not look obviously necessary for the logic to run in Aut
 
 For more information on engine creation generally and a deeper dive into how engine toolkit would be implemented through code, check out the Engine Toolkit section [here](developer/engines/toolkit)
 
-
 ### Debugging your flows
+
 Your debugging experience in Automate Studio can be thought of as two steps: 
 1. running the flow in the Automate Studio runtime, and 
 2. debugging the output of the logic you configured in previous nodes 
